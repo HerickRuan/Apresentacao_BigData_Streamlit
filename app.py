@@ -1,36 +1,33 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
+import analise_dados as ad
 
-# Carregar arquivos
-jan = pd.read_excel("arquivos/01-relfatporlinhaveiculoviagem_jan25.xlsx")
-fev = pd.read_excel("arquivos/02-relfatporlinhaveiculoviagem_fev25.xlsx")
-mar = pd.read_excel("arquivos/03-relfatporlinhaveiculoviagem_mar25.xlsx")
-rel = pd.read_csv("arquivos/relveiculos (ABR25).csv", sep=';', encoding='latin1')
+fig1 = ad.grafico_prop_viagens_semP(ad.df)
+fig2 = ad.grafico_top_linhas_vazias(ad.df)
+fig3 = ad.grafico_viagens_semP_por_hora(ad.df)
+fig4 = ad.grafico_ar_condicionado(ad.rel)
+fig5 = ad.grafico_veiculos_antes_2015(ad.rel)
 
-# Adicionando a Coluna "Mês" nas 3 tabelas
-jan['Mês'] = 'Janeiro'
-fev['Mês'] = 'Fevereiro'
-mar['Mês'] = 'Março'
+st.set_page_config(page_title="Ônibus de Teresina", page_icon="🚌")
 
-# Juntando as tabelas em uma (df)
-df = pd.concat([jan, fev, mar], ignore_index=True)
+st.title("Análise do Transporte Coletivo de Teresina")
+st.markdown("#### Apresentação dos dados coletados de viagens com e sem passageiros")
 
-# Filtra viagens sem passageiros
-df['Passageiros'] = pd.to_numeric(df['Passageiros'], errors='coerce')
-df['Data Hora Início Operação'] = pd.to_datetime(df['Data Hora Início Operação'], errors='coerce')
-df['hora_inicio'] = df['Data Hora Início Operação'].dt.hour
+st.header("📊 Proporção de Viagens com e sem Passageiros")
+st.markdown("Viagens que ocorreram com e sem passageiros no período avaliado.")
+st.pyplot(fig1)
 
-df_semP = df[df['Passageiros'] == 0]
-viagens_sem_passageiros_por_hora = df_semP['hora_inicio'].value_counts().sort_index()
+st.header("📌 Top 10 Linhas com Mais Viagens Vazias")
+st.markdown("Essas são as linhas com maior incidência de viagens sem passageiros.")
+st.pyplot(fig2)
 
-st.title("Análise das Viagens sem Passageiros")
+st.header("🕒 Viagens sem Passageiros por Hora de Início")
+st.markdown("Viagens sem passageiros por hora de início da operação.")
+st.pyplot(fig3)
 
-# Gráfico
-fig, ax = plt.subplots()
-ax.plot(viagens_sem_passageiros_por_hora.index, viagens_sem_passageiros_por_hora.values, marker='o')
-ax.set_xlabel("Hora do Dia")
-ax.set_ylabel("Número de Viagens sem Passageiros")
-ax.set_title("Viagens sem Passageiros por Hora de Início")
+st.header("❄️ Presença de Ar Condicionado")
+st.markdown("Distribuição da frota de ônibus com e sem ar condicionado.")
+st.pyplot(fig4)
 
-st.pyplot(fig)
+st.header("🚍 Veículos Fabricados até 2015")
+st.markdown("Análise da quantidade de veículos fabricados até 2015 e a partir de 2016.")
+st.pyplot(fig5)
