@@ -37,7 +37,7 @@ def grafico_prop_viagens_semP(df):
 
     # Gráfico
     fig, ax = plt.subplots()
-    ax.pie(valores, labels=labels01, autopct='%1.1f%%', startangle=90,colors=['mediumseagreen', 'salmon'])
+    ax.pie(valores, labels=labels01, autopct='%1.1f%%', startangle=90,colors=['salmon', 'mediumseagreen'])
     ax.set_title('Proporção de Viagens com e sem Passageiros')
     ax.axis('equal')
 
